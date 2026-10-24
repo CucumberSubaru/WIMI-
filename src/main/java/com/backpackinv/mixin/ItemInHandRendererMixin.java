@@ -67,9 +67,9 @@ public abstract class ItemInHandRendererMixin {
 
         // крышка поворачивается вокруг задней верхней кромки корпуса
         poseStack.pushPose();
-        poseStack.translate(0.0F, 0.0625F, -0.125F);
+        poseStack.translate(0.0F, -0.15625F, -0.125F);
         poseStack.mulPose(Axis.XP.rotationDegrees(-cfg.lidOpenAngle * lid));
-        poseStack.translate(0.0F, -0.0625F, 0.125F);
+        poseStack.translate(0.0F, 0.15625F, 0.125F);
         this.backpackinv$renderPart(poseStack, buffer, light, InventoryAnimation.lidStack());
         poseStack.popPose();
 
