@@ -14,8 +14,7 @@ public abstract class MinecraftMixin {
 
     @Inject(method = "setScreen", at = @At("HEAD"), cancellable = true)
     private void backpackinv$interceptInventory(Screen screen, CallbackInfo ci) {
-        if (screen instanceof InventoryScreen && InventoryAnimation.shouldIntercept()) {
-            InventoryAnimation.start();
+        if (screen instanceof InventoryScreen && InventoryAnimation.handleOpenRequest()) {
             ci.cancel();
         }
     }

@@ -10,9 +10,13 @@ public final class InventoryAnimation {
 
     private static Phase phase = Phase.NONE;
     private static int ticks = 0;
+    private static boolean screenOpened = false;
     private static boolean bypass = false;
+    private static float lowerFromBag = 1.0f;
+    private static float lowerFromLid = 1.0f;
     private static BackpackInvConfig config = new BackpackInvConfig();
-    private static ItemStack propStack;
+    private static ItemStack bodyStack;
+    private static ItemStack lidStack;
 
     private InventoryAnimation() {}
 
@@ -28,24 +32,46 @@ public final class InventoryAnimation {
         return phase != Phase.NONE;
     }
 
-    public static ItemStack propStack() {
-        if (propStack == null) {
-            propStack = new ItemStack(BackpackInv.BACKPACK_PROP);
-        }
-        return propStack;
+    public static ItemStack bodyStack() {
+        if (bodyStack == null) bodyStack = new ItemStack(BackpackInv.BACKPACK_BODY);
+        return bodyStack;
     }
 
-    /** Нужно ли перехватить открытие инвентаря и сначала показать рюкзак. */
-    public static boolean shouldIntercept() {
+    public static ItemStack lidStack() {
+        if (lidStack == null) lidStack = new ItemStack(BackpackInv.BACKPACK_LID);
+        return lidStack;
+    }
+
+    /**
+     * Вызывается, когда игра пытается открыть инвентарь.
+     * Возвращает true, если открытие нужно отменить (анимация запущена или уже идёт).
+     */
+    public static boolean handleOpenRequest() {
         if (bypass || !config.enabled) return false;
-        if (phase != Phase.NONE && phase != Phase.LOWERING) return false;
         Minecraft mc = Minecraft.getInstance();
-        return mc.player != null && mc.level != null && !mc.player.isSpectator();
+        if (mc.player == null || mc.level == null || mc.player.isSpectator()) return false;
+        switch (phase) {
+            case RAISING:
+                return true;   // повторное нажатие E во время анимации игнорируем
+            case OPEN:
+                return false;
+            default:
+                start();
+                return true;
+        }
     }
 
-    public static void start() {
+    private static void start() {
         reloadConfig();
         phase = Phase.RAISING;
+        ticks = 0;
+        screenOpened = false;
+    }
+
+    private static void beginLowering() {
+        lowerFromBag = bagProgress(0.0f);
+        lowerFromLid = lidProgress(0.0f);
+        phase = Phase.LOWERING;
         ticks = 0;
     }
 
@@ -56,14 +82,20 @@ public final class InventoryAnimation {
             return;
         }
         switch (phase) {
-            case RAISING:
-                if (mc.screen != null) { // игрок открыл что-то другое (меню паузы и т.п.)
+            case RAISING: {
+                if (!screenOpened && mc.screen != null) { // открыли что-то другое (меню паузы и т.п.)
                     phase = Phase.NONE;
                     return;
                 }
+                if (screenOpened && !(mc.screen instanceof InventoryScreen)) { // закрыли инвентарь раньше времени
+                    beginLowering();
+                    return;
+                }
                 ticks++;
-                if (ticks >= Math.max(1, config.raiseTicks)) {
-                    phase = Phase.OPEN;
+                int raise = Math.max(1, config.raiseTicks);
+                int openTick = Math.max(1, Math.min(raise, Math.round(raise * config.openFraction)));
+                if (!screenOpened && ticks >= openTick) {
+                    screenOpened = true;
                     bypass = true;
                     try {
                         mc.setScreen(new InventoryScreen(mc.player));
@@ -71,11 +103,14 @@ public final class InventoryAnimation {
                         bypass = false;
                     }
                 }
+                if (ticks >= raise) {
+                    phase = Phase.OPEN;
+                }
                 break;
+            }
             case OPEN:
                 if (!(mc.screen instanceof InventoryScreen)) {
-                    phase = Phase.LOWERING;
-                    ticks = 0;
+                    beginLowering();
                 }
                 break;
             case LOWERING:
@@ -89,22 +124,62 @@ public final class InventoryAnimation {
         }
     }
 
-    /** 0 = рюкзак за кадром, 1 = рюкзак полностью в руках. */
-    public static float progress(float partialTick) {
+    /** Высота рюкзака в кадре: 0 = за кадром, 1 = на месте. Может ненадолго превышать 1 (пружина). */
+    public static float bagProgress(float partialTick) {
         switch (phase) {
-            case RAISING:
-                return ease((ticks + partialTick) / Math.max(1, config.raiseTicks));
+            case RAISING: {
+                float t = clamp01((ticks + partialTick) / Math.max(1, config.raiseTicks));
+                float e = easeOutElastic(t);
+                // у самого старта пружина не ослабляется, чтобы рюкзак не «прыгал»
+                float k = clamp01(t / 0.12f);
+                float amp = 1.0f + (config.elasticStrength - 1.0f) * k;
+                return 1.0f + (e - 1.0f) * amp;
+            }
             case OPEN:
                 return 1.0f;
-            case LOWERING:
-                return 1.0f - ease((ticks + partialTick) / Math.max(1, config.lowerTicks));
+            case LOWERING: {
+                float t = clamp01((ticks + partialTick) / Math.max(1, config.lowerTicks));
+                return lowerFromBag * (1.0f - t * t * t);
+            }
             default:
                 return 0.0f;
         }
     }
 
-    private static float ease(float t) {
-        t = Math.max(0.0f, Math.min(1.0f, t));
-        return t * t * (3.0f - 2.0f * t);
+    /** Открытость крышки: 0 = закрыта, 1 = открыта. */
+    public static float lidProgress(float partialTick) {
+        switch (phase) {
+            case RAISING: {
+                float start = Math.max(1, config.raiseTicks) * config.lidStartFraction;
+                float t = clamp01((ticks + partialTick - start) / Math.max(1, config.lidTicks));
+                return easeOutBack(t);
+            }
+            case OPEN:
+                return 1.0f;
+            case LOWERING: {
+                float t = clamp01((ticks + partialTick) / Math.max(1.0f, config.lowerTicks * 0.4f));
+                return lowerFromLid * (1.0f - t * t * (3.0f - 2.0f * t));
+            }
+            default:
+                return 0.0f;
+        }
+    }
+
+    private static float easeOutElastic(float t) {
+        if (t <= 0.0f) return 0.0f;
+        if (t >= 1.0f) return 1.0f;
+        double c4 = (2.0 * Math.PI) / 3.0;
+        return (float) (Math.pow(2.0, -10.0 * t) * Math.sin((t * 10.0 - 0.75) * c4) + 1.0);
+    }
+
+    private static float easeOutBack(float t) {
+        float c1 = 1.70158f;
+        float c3 = c1 + 1.0f;
+        float u = t - 1.0f;
+        return 1.0f + c3 * u * u * u + c1 * u * u;
+    }
+
+    private static float clamp01(float v) {
+        return Math.max(0.0f, Math.min(1.0f, v));
     }
 }

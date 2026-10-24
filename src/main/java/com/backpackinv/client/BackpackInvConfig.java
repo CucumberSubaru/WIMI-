@@ -8,20 +8,29 @@ import java.io.Reader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-/** Настройки лежат в файле config/backpackinv.json. Перечитываются при каждом открытии инвентаря. */
+/**
+ * Настройки лежат в файле config/backpackinv-config.json.
+ * Файл перечитывается при каждом открытии инвентаря, перезапуск игры не нужен.
+ * Чтобы вернуть значения по умолчанию, удалите файл.
+ */
 public class BackpackInvConfig {
     public boolean enabled = true;
 
-    // длительность появления / убирания рюкзака в тиках (20 тиков = 1 секунда)
-    public int raiseTicks = 12;
-    public int lowerTicks = 8;
+    // ---- время (20 тиков = 1 секунда) ----
+    public int raiseTicks = 22;          // общая длительность появления рюкзака
+    public float openFraction = 0.4f;    // в какой момент появления (0..1) открывается сам инвентарь
+    public int lowerTicks = 10;          // длительность убирания рюкзака
+    public float elasticStrength = 0.7f; // сила «пружины» (0 = без отскока, 1 = как в оригинальной easeOutElastic)
 
-    // наклон рюкзака: true = как у карты в ванили (зависит от взгляда), false = фиксированный
-    public boolean useVanillaTilt = false;
+    // ---- крышка ----
+    public float lidOpenAngle = 105.0f;  // насколько откидывается крышка (градусы)
+    public float lidStartFraction = 0.35f; // в какой момент появления (0..1) начинает открываться крышка
+    public int lidTicks = 8;             // сколько тиков открывается крышка
+
+    // ---- рюкзак ----
+    public boolean useVanillaTilt = false; // true = наклон как у карты в ванили (зависит от взгляда)
     public float fixedTilt = 0.35f;
-
-    // положение и размер рюкзака относительно рук
-    public float scale = 1.5f;
+    public float scale = 1.1f;
     public float offsetX = 0.0f;
     public float offsetY = 0.05f;
     public float offsetZ = 0.0f;
@@ -29,9 +38,23 @@ public class BackpackInvConfig {
     public float rotY = 0.0f;
     public float rotZ = 0.0f;
 
+    // ---- руки ----
+    public boolean showHands = true;
+    public float handInward = 0.07f;     // сдвиг рук к центру (+) или наружу (-)
+    public float handUp = 0.0f;          // сдвиг рук вверх (+) или вниз (-)
+    public float handForward = 0.0f;     // сдвиг рук к камере (+) или от камеры (-)
+    public float handExtraRotX = 0.0f;   // дополнительные повороты рук (градусы)
+    public float handExtraRotY = 0.0f;
+    public float handExtraRotZ = 0.0f;
+
+    // дополнительное движение ПРАВОЙ руки, когда она открывает крышку
+    public float openHandUp = 0.15f;
+    public float openHandBack = -0.10f;
+    public float openHandRotX = -20.0f;
+
     public static BackpackInvConfig load() {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        Path path = FabricLoader.getInstance().getConfigDir().resolve("backpackinv.json");
+        Path path = FabricLoader.getInstance().getConfigDir().resolve("backpackinv-config.json");
         try {
             if (Files.exists(path)) {
                 try (Reader reader = Files.newBufferedReader(path)) {
