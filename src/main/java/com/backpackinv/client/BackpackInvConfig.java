@@ -32,7 +32,7 @@ public class BackpackInvConfig {
     public float fixedTilt = 0.35f;
     public float scale = 1.1f;
     public float offsetX = 0.0f;
-    public float offsetY = 0.05f;
+    public float offsetY = -0.2f;
     public float offsetZ = 0.0f;
     public float rotX = 0.0f;
     public float rotY = 0.0f;
@@ -41,7 +41,7 @@ public class BackpackInvConfig {
     // ---- руки ----
     public boolean showHands = true;
     public float handInward = 0.07f;     // сдвиг рук к центру (+) или наружу (-)
-    public float handUp = 0.0f;          // сдвиг рук вверх (+) или вниз (-)
+    public float handUp = 0.3f;          // сдвиг рук вверх (+) или вниз (-)
     public float handForward = 0.0f;     // сдвиг рук к камере (+) или от камеры (-)
     public float handExtraRotX = 0.0f;   // дополнительные повороты рук (градусы)
     public float handExtraRotY = 0.0f;
