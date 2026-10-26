@@ -1,3 +1,4 @@
-Backpack Inventory (Fabric 1.21.1). Только для личного использования:
-модель и текстура рюкзака принадлежат MrCrayfish (All Rights Reserved).
-Настройки: config/backpackinv-config.json (перечитываются при каждом открытии инвентаря).
+Where Is My Inventory!? (Fabric 1.21.1)
+Models and texture by CucumberS (me) (All Rights Reserved)
+Code by Claude A1
+config/backpackinv-config.json
