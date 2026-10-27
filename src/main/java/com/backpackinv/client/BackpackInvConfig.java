@@ -48,7 +48,7 @@ public class BackpackInvConfig {
     // ---- руки ----
     public boolean showHands = true;
     public float handInward = 0.07f;     // сдвиг рук к центру (+) или наружу (-)
-    public float handUp = 0.0f;          // сдвиг рук вверх (+) или вниз (-)
+    public float handUp = 0.3f;          // сдвиг рук вверх (+) или вниз (-)
     public float handForward = 0.0f;     // сдвиг рук к камере (+) или от камеры (-)
     public float handExtraRotX = 0.0f;   // дополнительные повороты рук (градусы)
     public float handExtraRotY = 0.0f;
