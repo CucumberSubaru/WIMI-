@@ -39,7 +39,7 @@ public class BackpackInvConfig {
     public float fixedTilt = 0.35f;
     public float scale = 1.1f;
     public float offsetX = 0.0f;
-    public float offsetY = 0.05f;
+    public float offsetY = -0.3f;
     public float offsetZ = 0.0f;
     public float rotX = 0.0f;
     public float rotY = 0.0f;
