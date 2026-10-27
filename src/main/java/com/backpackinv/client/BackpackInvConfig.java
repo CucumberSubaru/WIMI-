@@ -24,7 +24,6 @@ public class BackpackInvConfig {
 
     // ---- наклон при появлении и убирании ----
     // ---- доставание: те же параметры, что у убирания, но движение играется в обратную сторону ----
-    public int raiseTiltTicks = 44;
     public float raiseTiltAngle = 0.0f;     // наклон вперёд-назад в начале (градусы)
     public float raiseRollAngle = 25.0f;    // наклон вбок в начале (+ против часовой, - по часовой)
     public float raiseShiftX = 0.0f;        // смещение вбок в начале (+ вправо, - влево)
