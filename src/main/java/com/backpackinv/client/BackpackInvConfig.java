@@ -23,10 +23,11 @@ public class BackpackInvConfig {
     public float elasticStrength = 0.7f; // сила «пружины» (0 = без отскока, 1 = как в оригинальной easeOutElastic)
 
     // ---- наклон при появлении и убирании ----
-    public float raiseRollAngle = 25.0f;      // наклон вбок при доставании (+ против часовой, - по часовой)
-    public float raiseTiltAngle = 0.0f;       // наклон вперёд-назад при доставании (0 = выключен)
-    public float tiltPivotShiftY = 0.0f;      // сдвиг точки вращения от центра рюкзака (+ вверх, - вниз)
-    public float raiseTiltFraction = 1.0f;    // за какую часть появления (0..1) наклон выравнивается
+    // ---- доставание: те же параметры, что у убирания, но движение играется в обратную сторону ----
+    public float raiseTiltAngle = 0.0f;     // наклон вперёд-назад в начале (градусы)
+    public float raiseRollAngle = 25.0f;    // наклон вбок в начале (+ против часовой, - по часовой)
+    public float raiseShiftX = 0.0f;        // смещение вбок в начале (+ вправо, - влево)
+    public int raiseTiltTicks = 44;         // длительность выравнивания (тиков, 20 = секунда)
     public float lowerTiltAngle = -50.0f;     // наклон, с которым рюкзак уходит вниз при убирании
     public float lowerRollAngle = -25.0f;     // поворот по часовой (-) или против (+) при убирании
     public float lowerShiftX = 0.25f;         // смещение вбок при убирании (+ вправо, - влево)
