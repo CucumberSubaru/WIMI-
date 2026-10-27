@@ -27,7 +27,7 @@ public class BackpackInvConfig {
     public float raiseTiltAngle = 0.0f;     // наклон вперёд-назад в начале (градусы)
     public float raiseRollAngle = 25.0f;    // наклон вбок в начале (+ против часовой, - по часовой)
     public float raiseShiftX = 0.0f;        // смещение вбок в начале (+ вправо, - влево)
-    public int raiseTiltTicks = 44;         // длительность выравнивания (тиков, 20 = секунда)
+    public int raiseTiltTicks = 22;         // длительность выравнивания (тиков, 20 = секунда)
     public float lowerTiltAngle = -50.0f;     // наклон, с которым рюкзак уходит вниз при убирании
     public float lowerRollAngle = -25.0f;     // поворот по часовой (-) или против (+) при убирании
     public float lowerShiftX = 0.25f;         // смещение вбок при убирании (+ вправо, - влево)
