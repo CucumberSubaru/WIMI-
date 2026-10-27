@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "id": "wini",
+  "version": "1.3.0",
+  "name": "Where Is My Inventory?!",
+  "description": "Now when opening the inventory first raises a backpack!",
+  "authors": ["CucumberS"],
+  "license": "All-Rights-Reserved",
+  "environment": "*",
+  "entrypoints": {
+    "main": ["com.backpackinv.BackpackInv"],
+    "client": ["com.backpackinv.client.BackpackInvClient"]
+  },
+  "mixins": [
+    { "config": "backpackinv.mixins.json", "environment": "client" }
+  ],
+  "icon": "icon.png",
+  "depends": {
+    "fabricloader": ">=0.16.0",
+    "minecraft": "~1.21.1",
+    "java": ">=21",
+    "fabric-api": "*"
+  }
+}
