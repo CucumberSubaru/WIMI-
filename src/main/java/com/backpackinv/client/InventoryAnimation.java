@@ -103,7 +103,7 @@ public final class InventoryAnimation {
                         bypass = false;
                     }
                 }
-                if (ticks >= raise) {
+                if (ticks >= Math.max(raise, config.raiseTiltTicks)) {
                     phase = Phase.OPEN;
                 }
                 break;
@@ -168,7 +168,7 @@ public final class InventoryAnimation {
     /** Насколько сильно рюкзак ещё наклонён при появлении: 1 в начале, 0 когда выровнялся. */
     public static float raiseTilt(float partialTick) {
         if (phase != Phase.RAISING) return 0.0f;
-        float t = clamp01((ticks + partialTick) / Math.max(1, config.raiseTicks) / Math.max(0.05f, config.raiseTiltFraction));
+        float t = clamp01((ticks + partialTick) / Math.max(1, config.raiseTiltTicks));
         float u = 1.0f - t;
         return u * u;
     }
