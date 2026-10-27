@@ -44,17 +44,27 @@ public abstract class ItemInHandRendererMixin {
 
         poseStack.pushPose();
 
-        // та же плоскость, в которой ваниль держит карту двумя руками
         poseStack.translate(0.0F, 0.04F + (1.0F - bag) * -1.2F + tilt * -0.5F, -0.72F);
         poseStack.mulPose(Axis.XP.rotationDegrees(tilt * -85.0F));
 
-        // наклон при доставании и уход вбок с поворотом при убирании (рюкзак и руки двигаются вместе)
+        // наклон при доставании
         float raiseT = InventoryAnimation.raiseTilt(partialTicks);
         float lowerT = InventoryAnimation.lowerFactor(partialTicks);
+
+        // убирание
         poseStack.translate(cfg.lowerShiftX * lowerT, 0.0F, 0.0F);
-        poseStack.mulPose(Axis.XP.rotationDegrees(cfg.raiseTiltAngle * raiseT + cfg.lowerTiltAngle * lowerT));
+        poseStack.mulPose(Axis.XP.rotationDegrees(cfg.lowerTiltAngle * lowerT));
         poseStack.mulPose(Axis.ZP.rotationDegrees(cfg.lowerRollAngle * lowerT));
 
+        // доставание
+        float pivotX = cfg.offsetX;
+        float pivotY = cfg.offsetY + cfg.tiltPivotShiftY;
+        float pivotZ = cfg.offsetZ;
+        poseStack.translate(pivotX, pivotY, pivotZ);
+        poseStack.mulPose(Axis.ZP.rotationDegrees(cfg.raiseRollAngle * raiseT));
+        poseStack.mulPose(Axis.XP.rotationDegrees(cfg.raiseTiltAngle * raiseT));
+        poseStack.translate(-pivotX, -pivotY, -pivotZ);
+        
         if (cfg.showHands && !player.isInvisible()) {
             this.backpackinv$renderHand(poseStack, buffer, light, player, HumanoidArm.LEFT, cfg, 0.0F);
             this.backpackinv$renderHand(poseStack, buffer, light, player, HumanoidArm.RIGHT, cfg, lid);
