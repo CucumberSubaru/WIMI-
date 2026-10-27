@@ -170,7 +170,7 @@ public final class InventoryAnimation {
         if (phase != Phase.RAISING) return 0.0f;
         float t = clamp01((ticks + partialTick) / Math.max(1, config.raiseTicks) / Math.max(0.05f, config.raiseTiltFraction));
         float u = 1.0f - t;
-        return u * u * u;
+        return u * u;
     }
 
     /** Насколько далеко рюкзак ушёл в «убирающее» движение: 0 в начале убирания, 1 в конце. */
