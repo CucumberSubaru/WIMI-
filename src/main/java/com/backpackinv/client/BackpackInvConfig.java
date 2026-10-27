@@ -23,8 +23,8 @@ public class BackpackInvConfig {
     public float elasticStrength = 0.7f; // сила «пружины» (0 = без отскока, 1 = как в оригинальной easeOutElastic)
 
     // ---- наклон при появлении и убирании ----
-    public float raiseTiltAngle = -35.0f;     // начальный наклон при доставании (градусы, + верх к камере, - верх от камеры)
-    public float raiseTiltFraction = 0.6f;    // за какую часть появления (0..1) наклон выравнивается
+    public float raiseTiltAngle = -60.0f;     // начальный наклон при доставании (градусы, + верх к камере, - верх от камеры)
+    public float raiseTiltFraction = 1.0f;    // за какую часть появления (0..1) наклон выравнивается
     public float lowerTiltAngle = -50.0f;     // наклон, с которым рюкзак уходит вниз при убирании
     public float lowerRollAngle = -25.0f;     // поворот по часовой (-) или против (+) при убирании
     public float lowerShiftX = 0.25f;         // смещение вбок при убирании (+ вправо, - влево)
