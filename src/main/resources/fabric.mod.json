@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "wini",
-  "version": "1.3.0",
+  "version": "1.5.0",
   "name": "Where Is My Inventory?!",
   "description": "Now when opening the inventory first raises a backpack!",
   "authors": ["CucumberS"],

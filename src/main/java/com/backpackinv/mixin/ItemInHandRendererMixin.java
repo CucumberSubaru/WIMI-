@@ -48,6 +48,13 @@ public abstract class ItemInHandRendererMixin {
         poseStack.translate(0.0F, 0.04F + (1.0F - bag) * -1.2F + tilt * -0.5F, -0.72F);
         poseStack.mulPose(Axis.XP.rotationDegrees(tilt * -85.0F));
 
+        // наклон при доставании и уход вбок с поворотом при убирании (рюкзак и руки двигаются вместе)
+        float raiseT = InventoryAnimation.raiseTilt(partialTicks);
+        float lowerT = InventoryAnimation.lowerFactor(partialTicks);
+        poseStack.translate(cfg.lowerShiftX * lowerT, 0.0F, 0.0F);
+        poseStack.mulPose(Axis.XP.rotationDegrees(cfg.raiseTiltAngle * raiseT + cfg.lowerTiltAngle * lowerT));
+        poseStack.mulPose(Axis.ZP.rotationDegrees(cfg.lowerRollAngle * lowerT));
+
         if (cfg.showHands && !player.isInvisible()) {
             this.backpackinv$renderHand(poseStack, buffer, light, player, HumanoidArm.LEFT, cfg, 0.0F);
             this.backpackinv$renderHand(poseStack, buffer, light, player, HumanoidArm.RIGHT, cfg, lid);
@@ -67,6 +74,7 @@ public abstract class ItemInHandRendererMixin {
 
         // крышка поворачивается вокруг задней верхней кромки корпуса
         poseStack.pushPose();
+        // точка шарнира задана в координатах модели (до сдвига центровки): y = (5.5 - 8) / 16, z = (6 - 8) / 16
         poseStack.translate(0.0F, -0.15625F, -0.125F);
         poseStack.mulPose(Axis.XP.rotationDegrees(-cfg.lidOpenAngle * lid));
         poseStack.translate(0.0F, 0.15625F, 0.125F);
